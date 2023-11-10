@@ -118,3 +118,7 @@
 3. в директорию `server/model/weights` положить веса модели
 4. `docker compose up -d`
 5. сервис доступен по адресу `http://localhost:8501/`
+
+## Демо
+
+[Запись демо](https://drive.google.com/file/d/1Eu9758dRQjrwLC9xjYcFQtotSauwxVcH/view?usp=sharing)

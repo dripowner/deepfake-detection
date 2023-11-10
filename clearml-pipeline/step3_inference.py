@@ -16,7 +16,8 @@ import logging
 args = {
     "project_name":"deepfake-detection",
     "model_id": "b5f3986b6dd14ae7a63762b0fd4d52e0",
-    "dataset_name": "test-deepfake-detection-0.1"
+    "test_dataset_name": "test-deepfake-detection",
+    "test_dataset_version": "0.0.3"
 }
 
 input_model = InputModel(model_id=args["model_id"])
@@ -26,15 +27,15 @@ input_model = InputModel(model_id=args["model_id"])
 task = Task.init(project_name="deepfake-detection", task_name="Pretrained model inference")
 
 logger = task.get_logger()
-logger.report_text('log some text', level=logging.DEBUG, print_console=True)
 
 task.connect(args)
 task.connect(input_model)
 
-print('Get test dataset')
+print('Get Test dataset')
 test_path = Dataset.get(
-    dataset_name=args["dataset_name"], 
-    dataset_project=args["project_name"]
+    dataset_name=args["test_dataset_name"], 
+    dataset_project=args["project_name"],
+    dataset_version=args["test_dataset_version"] 
 ).get_local_copy()
 print('Test dataset loaded')
 
@@ -71,7 +72,7 @@ print("Elapsed:", inf_time)
 submission_df = pd.DataFrame({"filename": test_videos, "predicted_label": predictions})
 
 df = pd.read_json(os.path.join(test_path, "metadata.json")).T
-df.drop(axis=1, columns=["split"], inplace=True)
+df.drop(axis=1, columns=["split", "original"], inplace=True)
 df.reset_index(inplace=True)
 df.columns = ["filename", "label"]
 df = df.merge(submission_df, on="filename")
@@ -86,11 +87,11 @@ logger.report_table(title="Classification Report",
                     iteration=0, 
                     series='pandas DataFrame')
 logger.report_single_value("Log Loss", log_loss(list(df["label"]), list(df["probs"]), labels=["REAL", "FAKE"]))
-
 logger.report_confusion_matrix("Confusion Matrix", "ignored", 
                                iteration=0, 
                                matrix=confusion_matrix(df["label"], df["predicted_label"], labels=["FAKE", "REAL"]),
                                xaxis="Predicted", yaxis="True")
 
 logger.report_single_value("Inference Time", inf_time)
+logger.report_single_value("Mean inference time for 1 video", inf_time / len(test_videos))
 

@@ -2,7 +2,7 @@ import io
 import json
 import os
 import re
-
+from dotenv import load_dotenv
 import numpy as np
 import torch
 
@@ -14,7 +14,7 @@ from starlette.responses import Response
 
 from classifiers import DeepFakeClassifier
 from kernel_utils import VideoReader, FaceExtractor, confident_strategy, predict_on_video
-from client.utils.s3_helpers import create_s3_client
+from utils.s3_helpers import create_s3_client
 from imageio import v3 as iio
 from pytube import YouTube
 
@@ -22,15 +22,17 @@ from pytube import YouTube
 app = FastAPI()
 router = APIRouter()
 
+load_dotenv()
 ###################
 # APIs
 ###################
 
 models = []
-model_paths = [os.path.join("../model", "weights", "final_111_DeepFakeClassifier_tf_efficientnet_b7_ns_0_36")]
+model_paths = [os.path.join("model", "weights", "classifier_DeepFakeClassifier_tf_efficientnet_b5_ns_0_best_dice")]
 for path in model_paths:
-    model = DeepFakeClassifier(encoder="tf_efficientnet_b7_ns").to("cuda")
+    model = DeepFakeClassifier(encoder="tf_efficientnet_b5_ns").to("cuda")
     print("loading state dict {}".format(path))
+    print(path)
     checkpoint = torch.load(path, map_location="cpu")
     state_dict = checkpoint.get("state_dict", checkpoint)
     model.load_state_dict({re.sub("^module.", "", k): v for k, v in state_dict.items()}, strict=True)
@@ -123,4 +125,4 @@ app.include_router(router)
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8080, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

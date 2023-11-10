@@ -1,11 +1,14 @@
 import json
 import os
-
+from dotenv import load_dotenv
 import numpy as np
 import requests
 import streamlit as st
 
 from utils.s3_helpers import create_s3_client, upload_to_yandex_storage
+
+
+load_dotenv()
 
 
 def process_video(video_url: str, server_url: str, url_type: str):
@@ -22,7 +25,7 @@ def main():
 
     service_account_key_id = os.environ.get("SERVICE_ACCOUNT_KEY_ID")
     service_account_secret = os.environ.get("SERVICE_ACCOUNT_SECRET")
-    server_url = "http://localhost:8080/deepfake_predict"
+    server_url = "http://src-server-1:8000/deepfake_predict"
     bucket_name = "pronomuos"
     file_ttl = 1800
 

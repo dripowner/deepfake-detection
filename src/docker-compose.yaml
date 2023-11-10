@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  client:
+    build: ./client
+    ports: 
+      - 8501:8501
+    networks:
+      - deploy_network
+
+  server:
+    build: ./server
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    ports:
+      - "8000:8000"
+    networks:
+      - deploy_network
+
+networks:
+  deploy_network:
+    driver: bridge

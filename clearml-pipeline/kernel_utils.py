@@ -246,7 +246,8 @@ class FaceExtractor:
                               "frame_w": w,
                               "frame_h": h,
                               "faces": faces,
-                              "scores": scores}
+                              "scores": scores,
+                              "sample": my_frames[-1]}
                 results.append(frame_dict)
 
         return results
@@ -333,7 +334,7 @@ def predict_on_video(face_extractor, video_path, batch_size, input_size, models,
                         y_pred = torch.sigmoid(y_pred.squeeze())
                         bpred = y_pred[:n].cpu().numpy()
                         preds.append(strategy(bpred))
-                    return np.mean(preds)
+                    return np.mean(preds), faces[0]["sample"]
     except Exception as e:
         print("Prediction error on video %s: %s" % (video_path, str(e)))
 

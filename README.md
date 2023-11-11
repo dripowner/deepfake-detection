@@ -62,11 +62,11 @@
 
 Тестовая выборка
 
-![Тест](readme-images/data.png)
+![Тест](readme-images/data1.png)
 
 Тренировочная выборка, содержащая также отдельно кропы, ключевые точки на лицах и ssim diff masks
 
-![Тест](readme-images/data.png)
+![Тренировочная](readme-images/dat2a.png)
 
 ## Обучение моделей
 

@@ -113,6 +113,10 @@
 
 Разработан сервис с импользованием Streamlit и FastAPI
 
+### Архитектура MVP 
+
+![demo-architecture](readme-images/demo_architecture.png)
+
 ### Окружение
 
 Окружение зафиксировано с помощью Dockerfile и docker-compose файлов
